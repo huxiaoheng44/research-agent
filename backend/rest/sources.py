@@ -22,7 +22,7 @@ async def upload_sources(files: list[UploadFile] = File(...)):
                 
             text = document_service.load_text(file_path)
             chunks = document_service.chunk_text(text)
-            embeddings = embedding_service.get_embeddings(chunks)
+            embeddings = embedding_service.embed_documents(chunks)
             vector_store.add(chunks, embeddings, source=file.filename)
             
             uploaded.append({"name": file.filename})
