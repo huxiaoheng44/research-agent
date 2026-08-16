@@ -1,9 +1,7 @@
-import asyncio
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from dependencies import embedding_service, vector_store
 from agent.agent_container import research_agent
 
 
@@ -14,28 +12,23 @@ class ResearchRequest(BaseModel):
 
 
 async def generate_response(request: str):
-    
-    query_embedding = embedding_service.embed_query(request)
-    
-    results = vector_store.search(query_embedding, top_k=5)
-    
-    yield f"## Research Results for: {request}\n\n"
-    
-    if not results:
-        yield "No relevant documents found.\n"
-        return
-
-    for result in results:
-        yield f"### Source: {result['source']} (Chunk Index: {result['chunk_index']})\n"
-        yield f"Score: {result['score']:.4f}\n\n"
-        yield f"{result['text']}\n\n"
+    try:
+        async for chunk in research_agent.stream(request):
+            yield chunk
+    except Exception:
+        # Headers have already been sent once streaming starts, so surface a safe
+        # Markdown error to the existing streaming client and keep details in logs.
+        print("[ERROR] Research stream failed", flush=True)
+        yield "\n\n> **Research failed.** Please try again later.\n"
 
 
 @router.post("/research")
 async def research(body: ResearchRequest):
-    try:
-        answer = await  research_agent.run(body.request)
-        return {"answer": answer}
-    
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error during research: {str(e)}")
+    if not body.request.strip():
+        raise HTTPException(status_code=400, detail="Research request must not be empty.")
+
+    return StreamingResponse(
+        generate_response(body.request),
+        media_type="text/markdown; charset=utf-8",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )

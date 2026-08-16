@@ -7,9 +7,8 @@ class LLMService:
     def __init__(self):
         self.client = AsyncOpenAI()
         
-    async def create_response(self, input_items, tools=None, previous_response_id=None):
+    async def create_stream(self, input_items, tools=None, previous_response_id=None):
         return await self.client.responses.create(
-            # Keep this configurable because model access differs by API project.
             model=os.getenv("OPENAI_MODEL", "gpt-5.6"),
             instructions=(
                 "You are a research agent. "
@@ -24,4 +23,5 @@ class LLMService:
             input=input_items,
             tools=tools or [],
             previous_response_id=previous_response_id,
+            stream=True,
         )
