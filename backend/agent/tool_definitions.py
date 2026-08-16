@@ -3,9 +3,10 @@ TOOLS = [
         "type": "function",
         "name": "search_uploaded_sources",
         "description": (
-            "Search the user's uploaded source files for information "
-            "relevant to the research request. Use this tool when the "
-            "question may depend on information contained in uploaded files."
+            "Search only the user's private uploaded source files. Use this "
+            "tool when the user refers to uploaded documents, asks about their "
+            "contents, or explicitly asks for an answer grounded in those files. "
+            "Do not use it for current public information or general web knowledge."
         ),
         "parameters": {
             "type": "object",
@@ -22,5 +23,10 @@ TOOLS = [
             "additionalProperties": False,
         },
         "strict": True,
-    }
+    },
+    {
+        # OpenAI-hosted tool.
+        "type": "web_search",
+        "search_context_size": "low",
+    },
 ]

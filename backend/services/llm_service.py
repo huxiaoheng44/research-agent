@@ -15,9 +15,12 @@ class LLMService:
                 "Answer research questions accurately and concisely. "
                 "Use tools when they provide relevant evidence. "
                 "Use search_uploaded_sources when the question may depend "
-                "on files uploaded by the user. "
+                "on files uploaded by the user. Use web_search for current, "
+                "public, or externally verifiable information. Use both when "
+                "the user asks to compare uploaded files with external sources. "
                 "Do not use tools when they are unnecessary. "
                 "When you use uploaded sources, mention the source filename. "
+                "When you use web search, include the provided source citations. "
                 "Return the final answer in Markdown."
             ),
             input=input_items,
