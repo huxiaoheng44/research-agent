@@ -28,3 +28,11 @@ class LLMService:
             previous_response_id=previous_response_id,
             stream=True,
         )
+
+    async def create_judgment_response(self, input_items, instructions: str):
+        """Create a small non-streaming response for internal agent decisions."""
+        return await self.client.responses.create(
+            model=os.getenv("LOCAL_JUDGE_MODEL", "gpt-5.6-luna"),
+            instructions=instructions,
+            input=input_items,
+        )
