@@ -31,6 +31,12 @@ class ResearchAgent:
                     item = event.item
                     if item.type == "function_call":
                         tool_calls.append(item)
+                        # Forward the raw local-tool request 
+                        try:
+                            query = json.loads(item.arguments).get("query", item.arguments)
+                        except json.JSONDecodeError:
+                            query = item.arguments
+                        yield f"[TOOL] {item.name}: {query}\n"
                 elif event.type == "response.completed":
                     response_id = event.response.id
                 elif event.type == "response.failed":
@@ -64,8 +70,7 @@ class ResearchAgent:
         arguments = json.loads(tool_call.arguments)
         
         if tool_call.name == "search_uploaded_sources":
-            # Embedding inference and vector search are synchronous CPU work.
-            # Run them outside the event loop so a streaming request stays responsive.
+            # Run outside the event loop so a streaming request stays responsive.
             return await asyncio.to_thread(search_uploaded_sources, query=arguments["query"])
         
         raise Exception(f"Unknown tool: {tool_call.name}")
