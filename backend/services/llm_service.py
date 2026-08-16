@@ -13,10 +13,10 @@ class LLMService:
             instructions=(
                 "You are a research agent. "
                 "Answer research questions accurately and concisely. "
-                "The user message may contain vetted excerpts from uploaded "
-                "files. Use them only when they directly support the answer, "
-                "but do not add a source list. Do not claim to have "
-                "consulted uploaded files when no excerpts were provided. "
+                "You have a web search tool and should decide whether to use "
+                "it: use it when local evidence is absent or insufficient, "
+                "when the user requests external/current information, or when "
+                "verification would materially improve accuracy. "
                 "Return the final answer in Markdown."
             ),
             input=input_items,

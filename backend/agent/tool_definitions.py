@@ -1,5 +1,4 @@
-TOOLS = [
-    {
+LOCAL_SEARCH_TOOL = {
         "type": "function",
         "name": "search_uploaded_sources",
         "description": (
@@ -23,10 +22,13 @@ TOOLS = [
             "additionalProperties": False,
         },
         "strict": True,
-    },
-    {
+}
+
+WEB_SEARCH_TOOL = {
         # OpenAI-hosted tool.
         "type": "web_search",
         "search_context_size": "low",
-    },
-]
+}
+
+TOOLS = [LOCAL_SEARCH_TOOL, WEB_SEARCH_TOOL]
+WEB_SEARCH_TOOLS = [WEB_SEARCH_TOOL]
