@@ -13,14 +13,10 @@ class LLMService:
             instructions=(
                 "You are a research agent. "
                 "Answer research questions accurately and concisely. "
-                "Use tools when they provide relevant evidence. "
-                "Use search_uploaded_sources when the question may depend "
-                "on files uploaded by the user. Use web_search for current, "
-                "public, or externally verifiable information. Use both when "
-                "the user asks to compare uploaded files with external sources. "
-                "Do not use tools when they are unnecessary. "
-                "When you use uploaded sources, mention the source filename. "
-                "When you use web search, include the provided source citations. "
+                "The user message may contain vetted excerpts from uploaded "
+                "files. Use them only when they directly support the answer, "
+                "but do not add a source list. Do not claim to have "
+                "consulted uploaded files when no excerpts were provided. "
                 "Return the final answer in Markdown."
             ),
             input=input_items,
