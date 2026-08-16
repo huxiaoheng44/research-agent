@@ -6,7 +6,7 @@ The app lets a user:
 
 - enter a research request
 - upload source files
-- view a streamed markdown response
+- view a Markdown response
 
 ## Setup
 
@@ -40,5 +40,5 @@ VITE_API_BASE_URL=http://localhost:8787 npm run dev
 
 Expected endpoints:
 
-- `POST /api/research` — accepts JSON `{ "request": "..." }` and returns a streamed markdown response.
+- `POST /api/research` — accepts JSON `{ "request": "..." }` and returns JSON `{ "answer": "..." }`.
 - `POST /api/sources` — accepts multipart form uploads under the repeated field name `files`.

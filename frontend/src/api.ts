@@ -1,10 +1,9 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8787'
 
-export async function streamResearch(
+export async function requestResearch(
   request: string,
-  onChunk: (chunk: string) => void,
   signal?: AbortSignal,
-): Promise<void> {
+): Promise<string> {
   const response = await fetch(`${API_BASE_URL}/api/research`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -17,28 +16,18 @@ export async function streamResearch(
     throw new Error(text || `Research request failed with ${response.status}`)
   }
 
-  if (!response.body) {
-    throw new Error('Research response did not include a stream.')
+  const payload: unknown = await response.json()
+
+  if (
+    !payload ||
+    typeof payload !== 'object' ||
+    !('answer' in payload) ||
+    typeof payload.answer !== 'string'
+  ) {
+    throw new Error('Research response did not include an answer.')
   }
 
-  const decoder = new TextDecoder()
-  const reader = response.body.getReader()
-
-  while (true) {
-    const { done, value } = await reader.read()
-
-    if (done) {
-      break
-    }
-
-    onChunk(decoder.decode(value, { stream: true }))
-  }
-
-  const finalChunk = decoder.decode()
-
-  if (finalChunk) {
-    onChunk(finalChunk)
-  }
+  return payload.answer
 }
 
 export type UploadResult = {

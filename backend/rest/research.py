@@ -1,9 +1,11 @@
 import asyncio
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from dependencies import embedding_service, vector_store
+from agent.agent_container import research_agent
+
 
 router = APIRouter()
 
@@ -31,5 +33,9 @@ async def generate_response(request: str):
 
 @router.post("/research")
 async def research(body: ResearchRequest):
-    response_generator = generate_response(body.request)
-    return StreamingResponse(response_generator, media_type="text/markdown")
+    try:
+        answer = await  research_agent.run(body.request)
+        return {"answer": answer}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error during research: {str(e)}")

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import type { ChangeEvent, SubmitEvent } from 'react'
 import './App.css'
-import { streamResearch, uploadSources } from './api'
+import { requestResearch, uploadSources } from './api'
 
 function App() {
   const [requestText, setRequestText] = useState<string>('')
@@ -36,13 +36,11 @@ function App() {
     setIsResearching(true)
 
     try {
-      await streamResearch(
+      const answer = await requestResearch(
         trimmedRequest,
-        (chunk) => {
-          setMarkdown((current) => current + chunk)
-        },
         abortController.signal,
       )
+      setMarkdown(answer)
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') {
         if (userAbortRequestedRef.current) {
@@ -161,7 +159,7 @@ function App() {
       </section>
 
       <section className="panel" aria-labelledby="response-heading">
-        <h2 id="response-heading">Streaming response</h2>
+        <h2 id="response-heading">Research response</h2>
         <pre className="markdown-output" aria-live="polite">
           {markdown || 'Submit a research request to see the markdown answer here.'}
         </pre>

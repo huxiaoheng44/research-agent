@@ -1,3 +1,9 @@
+from dotenv import load_dotenv
+
+# Load configuration before importing routes.  Route imports create the shared
+# LLM service, whose OpenAI client needs OPENAI_API_KEY during initialization.
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
