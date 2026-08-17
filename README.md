@@ -48,9 +48,9 @@ npm run dev
 
 For this project, I would evaluate the agent with a small set of questions whose answers are known to exist in uploaded documents. For each question, I would check:
 
-- whether the agent selects relevant uploaded-file chunks and answer is supported by those chunks;
-- whether the agent avoids unnecessary web search;
-- whether it uses web search when the local documents do not contain the necessary information.
+- whether the agent selects relevant uploaded-file chunks and answer is supported by those chunks
+- whether the agent avoids unnecessary web search
+- whether it uses web search when the local documents do not contain the necessary information
 
 This evaluation is important because a model may prefer web search even when the answer is already available in a private uploaded document. To address this, the application uses a local evidence judge. It reviews the top five similarity-search results and selects only the chunks that are useful before they are passed to the main agent. This reduces irrelevant context while preserving useful information from uploaded files also reduces the token costs on the other hand.
 
